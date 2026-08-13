@@ -37,6 +37,7 @@ export function useTauriEvent<T>(
   handlerRef.current = handler;
 
   useEffect(() => {
+    if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__) return;
     let cancelled = false;
     let unlisten: (() => void) | undefined;
 

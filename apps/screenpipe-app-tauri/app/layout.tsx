@@ -287,7 +287,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} scrollbar-hide ${isSearch ? "bg-transparent" : ""}`}>
+      <body className={`${inter.className} scrollbar-hide ${isSearch ? "bg-transparent" : ""}`} suppressHydrationWarning>
         {/* Providers sits INSIDE <body> so the body element is present in
             both the static export and the first client render. With Providers
             wrapping <body>, gating Providers' children on a post-mount flag

@@ -2219,7 +2219,7 @@ export function RecordingSettings({ section }: { section: RecordingSettingsSecti
         if (monitorResult.status === "error") {
           throw new Error(`Failed to fetch monitors: ${monitorResult.error}`);
         }
-        const monitors = monitorResult.data;
+        const monitors = monitorResult.data ?? [];
         console.log("monitors", monitors);
         setAvailableMonitors(monitors);
 
@@ -2228,7 +2228,7 @@ export function RecordingSettings({ section }: { section: RecordingSettingsSecti
         if (audioResult.status === "error") {
           throw new Error(`Failed to fetch audio devices: ${audioResult.error}`);
         }
-        const audioDevices = audioResult.data;
+        const audioDevices = audioResult.data ?? [];
         setAvailableAudioDevices(audioDevices);
 
         // Update monitors — match by stable ID, with backward compat for old numeric IDs

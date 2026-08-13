@@ -692,11 +692,14 @@ async getMonitors() : Promise<Result<MonitorDevice[], string>> {
 },
 async getOnboardingStatus() : Promise<Result<OnboardingStore, string>> {
     try {
-    return { status: "ok", data: await TAURI_INVOKE("get_onboarding_status") };
-} catch (e) {
-    if(e instanceof Error) throw e;
-    else return { status: "error", error: e  as any };
-}
+        if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__) {
+            return { status: "ok", data: { isCompleted: true, completedAt: new Date().toISOString(), currentStep: null } };
+        }
+        return { status: "ok", data: await TAURI_INVOKE("get_onboarding_status") };
+    } catch (e) {
+        if(e instanceof Error) throw e;
+        else return { status: "error", error: e  as any };
+    }
 },
 /**
  * Hydrate the frontend banner state on mount. The `update-available` event

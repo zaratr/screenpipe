@@ -37,7 +37,7 @@ export function usePermissionMonitor() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__) return;
 
     const skipPaths = ["/shortcut-reminder", "/onboarding", "/permission-recovery"];
     if (skipPaths.some((p) => pathname?.startsWith(p))) return;

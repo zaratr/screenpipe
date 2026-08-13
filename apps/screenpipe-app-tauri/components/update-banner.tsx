@@ -385,6 +385,7 @@ export function useUpdateListener() {
     };
 
     const setupListeners = async () => {
+      if (typeof window === "undefined" || !(window as any).__TAURI_INTERNALS__) return;
       // Download happens silently in the background. Banner only appears
       // when the download is complete and the app is ready to restart.
       unlistenAvailable = await listen<UpdateInfo>("update-available", (event) => {

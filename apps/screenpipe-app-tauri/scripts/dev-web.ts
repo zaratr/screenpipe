@@ -31,7 +31,7 @@ console.log("[web dev] open http://127.0.0.1:1420/home");
 const child = Bun.spawn(
   ["bun", "x", "next", "dev", "-H", "127.0.0.1", "-p", "1420"],
   {
-    cwd: import.meta.dir.replace(/\/scripts$/, ""),
+    cwd: import.meta.dir.replace(/[/\\]scripts$/, ""),
     env: {
       ...process.env,
       NEXT_PUBLIC_SCREENPIPE_WEB_DEV: mode,
