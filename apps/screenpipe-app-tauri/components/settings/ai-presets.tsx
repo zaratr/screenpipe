@@ -803,7 +803,10 @@ const AISection = ({
     const isAnthropic = settingsPreset?.provider === "anthropic";
     let modelsUrl: string;
     if (settingsPreset?.provider === "native-ollama") {
-      modelsUrl = "http://localhost:11434/api/tags";
+      const baseUrl = settingsPreset?.url?.trim()
+        ? settingsPreset.url.trim().replace(/\/v1\/?$/, "").replace(/\/+$/, "")
+        : "http://localhost:11434";
+      modelsUrl = `${baseUrl}/api/tags`;
     } else if (settingsPreset?.provider === "openai" || settingsPreset?.provider === "openai-chatgpt") {
       modelsUrl = "https://api.openai.com/v1/models";
     } else if (isAnthropic) {
