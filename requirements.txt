@@ -1,0 +1,10 @@
+# Screenpipe Workspace Build Dependencies & Tools
+# Note: Screenpipe is a Rust + Bun/TypeScript workspace.
+# Standard Python packages are not required for core build, but system toolchains are listed below.
+
+# System Package Managers & Tools:
+# - Bun (js/ts runtime): >= 1.1 (https://bun.sh)
+# - Rust / Cargo: >= 1.80 (https://rustup.rs)
+# - FFmpeg: >= 6.0 (system binary)
+# - CMake: >= 3.20 (system binary)
+# - Clang / LLVM (libclang): for C++ FFI bindgen

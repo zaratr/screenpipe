@@ -1456,16 +1456,16 @@ const AISection = ({
         />
       )}
 
-      {settingsPreset?.provider === "custom" && (
+      {(settingsPreset?.provider === "custom" || settingsPreset?.provider === "native-ollama") && (
         <ValidatedInput
           id="customAiUrl"
-          label="Custom URL"
+          label={settingsPreset?.provider === "native-ollama" ? "Ollama Server URL" : "Custom URL"}
           value={settingsPreset?.url || ""}
           onChange={(value, isValid) => updateSettingsPreset({ url: value })}
-          validation={(value) => validateAiProviderUrl(value, "custom")}
-          placeholder="e.g. https://integrate.api.nvidia.com/v1 or http://localhost:11434/v1"
+          validation={(value) => validateAiProviderUrl(value, settingsPreset?.provider || "custom")}
+          placeholder={settingsPreset?.provider === "native-ollama" ? "http://192.168.1.181:11434 or http://localhost:11434" : "e.g. http://192.168.1.181:11434/v1"}
           required={true}
-          helperText={formErrors.url || "Base URL before /models and /chat/completions. Examples: Gemini https://generativelanguage.googleapis.com/v1beta/openai, NVIDIA NIM https://integrate.api.nvidia.com/v1, Ollama http://localhost:11434/v1"}
+          helperText={formErrors.url || (settingsPreset?.provider === "native-ollama" ? "Base URL of your local or remote Ollama server (e.g. http://192.168.1.181:11434 or http://192.168.1.181:11434/v1)" : "Base URL before /models and /chat/completions. Examples: Gemini https://generativelanguage.googleapis.com/v1beta/openai, NVIDIA NIM https://integrate.api.nvidia.com/v1, Ollama http://localhost:11434/v1")}
         />
       )}
 
