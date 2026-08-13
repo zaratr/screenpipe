@@ -1063,11 +1063,11 @@ const AISection = ({
     try {
       switch (settingsPreset?.provider) {
 
-        case "native-ollama":
-          // Use native HTTP (Rust-side) — a browser fetch from the
-          // tauri://localhost webview to http://localhost:11434 is blocked by
-          // WKWebView (mixed-content / cross-origin), leaving the model list empty.
-          const ollamaResponse = await tauriFetchWithDeadline("http://localhost:11434/api/tags");
+        case "native-ollama": {
+          const baseUrl = settingsPreset?.url?.trim()
+            ? settingsPreset.url.trim().replace(/\/v1\/?$/, "").replace(/\/+$/, "")
+            : "http://localhost:11434";
+          const ollamaResponse = await tauriFetchWithDeadline(`${baseUrl}/api/tags`);
           if (!ollamaResponse.ok)
             throw new Error("Failed to fetch Ollama models");
           const ollamaData = (await ollamaResponse.json()) as {
@@ -1081,6 +1081,7 @@ const AISection = ({
             }))
           );
           break;
+        }
 
         case "openai":
           const r = await tauriFetchWithDeadline("https://api.openai.com/v1/models", {

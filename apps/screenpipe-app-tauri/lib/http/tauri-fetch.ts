@@ -245,7 +245,10 @@ export async function tauriFetchWithDeadline(
 
   let res: Response;
   try {
-    res = await tauriFetch(input, {
+    const fetchFn = (typeof window !== "undefined" && !(window as any).__TAURI_INTERNALS__)
+      ? window.fetch.bind(window)
+      : tauriFetch;
+    res = await fetchFn(input, {
       ...init,
       connectTimeout: connectTimeoutMs,
       signal: controller.signal,
