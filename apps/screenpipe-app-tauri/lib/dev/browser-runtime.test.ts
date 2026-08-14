@@ -6,6 +6,8 @@ import { describe, expect, it, vi } from "vitest";
 import type {
   BrainViewCanvasDocument,
   BrainViewDefinition,
+  PiInfo,
+  PiProviderConfig,
 } from "@/lib/utils/tauri";
 import {
   mockLocalApiResponse,
@@ -59,6 +61,41 @@ describe("browser development runtime", () => {
       key: "local-key",
       port: 3040,
       auth_enabled: true,
+    });
+  });
+
+  it("returns raw IPC values for browser Ollama sessions", () => {
+    const invoke = createBrowserIpcMock({ mode: "live", apiPort: 3030 });
+    const providerConfig: PiProviderConfig = {
+      provider: "native-ollama",
+      url: "http://192.168.1.181:11434/v1",
+      model: "gemma4:latest",
+      apiKey: null,
+    };
+
+    expect(invoke("pi_info", { sessionId: "chat-1" })).toMatchObject({
+      running: false,
+      sessionId: null,
+    });
+
+    const started = invoke("pi_start", {
+      sessionId: "chat-1",
+      projectDir: "/tmp/chat-1",
+      userToken: null,
+      providerConfig,
+    }) as PiInfo;
+    expect(started).toMatchObject({
+      running: true,
+      busy: false,
+      sessionId: "chat-1",
+      startupError: null,
+    });
+    expect(started).not.toHaveProperty("status");
+    expect(invoke("pi_info", { sessionId: "chat-1" })).toEqual(started);
+
+    expect(invoke("pi_stop", { sessionId: "chat-1" })).toMatchObject({
+      running: false,
+      sessionId: null,
     });
   });
 

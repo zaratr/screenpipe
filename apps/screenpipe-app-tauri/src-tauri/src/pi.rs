@@ -7045,6 +7045,18 @@ error: InstallFailed extracting tarball"#;
     }
 
     #[tokio::test]
+    async fn test_build_models_json_ollama_provider_uses_custom_url() {
+        let mut pc = make_provider_config("native-ollama", "gemma4:latest");
+        pc.url = "http://192.168.1.181:11434/v1".to_string();
+
+        let config = build_models_json(None, Some(&pc)).await;
+        let ollama = &config["providers"]["ollama"];
+
+        assert_eq!(ollama["baseUrl"], "http://192.168.1.181:11434/v1");
+        assert_eq!(ollama["models"][0]["id"], "gemma4:latest");
+    }
+
+    #[tokio::test]
     async fn test_build_models_json_anthropic_provider() {
         let pc = make_provider_config("anthropic", "claude-sonnet-4-5");
         let config = build_models_json(None, Some(&pc)).await;

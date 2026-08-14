@@ -14,6 +14,7 @@ import { commands, type AIPreset, type PiInfo, type PiProviderConfig } from "@/l
 import type { ActivityAppItem, ConnectedIntegration, ConnectionListItem } from "@/lib/chat/connection-suggestions";
 import { useAcpSessionConfig } from "@/lib/stores/acp-session-config";
 import { applyResolvedModelLimits } from "@/lib/model-metadata";
+import { getApiBaseUrl } from "@/lib/api";
 
 type PiRunningConfig = {
   backend?: "acp" | null;
@@ -189,7 +190,8 @@ export function usePiSessionLifecycle({
     const p = applyResolvedModelLimits(selectedPreset);
     const presetPrompt = p.prompt || "";
     const isAcp = p.provider === "acp";
-    const connectionsCtx = buildConnectionsContext(connections);
+    const localApiBaseUrl = getApiBaseUrl();
+    const connectionsCtx = buildConnectionsContext(connections, localApiBaseUrl);
     // App-awareness ("currently looking at app X") drifts continuously as the
     // screen is used. Baking it into an ACP adapter's spawn-time system
     // prompt would make the prompt churn and trigger adapter respawns; ACP
@@ -201,7 +203,7 @@ export function usePiSessionLifecycle({
           apps: appItems,
           connections: allConnectionItems,
         });
-    const systemPrompt = `${buildSystemPrompt()}\n\n${presetPrompt}${connectionsCtx}${appAwarenessCtx}`.trim() || null;
+    const systemPrompt = `${buildSystemPrompt(localApiBaseUrl)}\n\n${presetPrompt}${connectionsCtx}${appAwarenessCtx}`.trim() || null;
     // Reopen-time resume: only on a cold start (no agent running for this
     // chat) do we ask the runtime to reattach to the chat's prior ACP
     // session. Mid-session respawns (model switches via new_session) must
