@@ -412,7 +412,13 @@ const AISection = ({
     () => aiPresetConnectionFingerprint(settingsPreset || {}),
     [settingsPreset],
   );
-  const connectionTestRequired = shouldRequireAiPresetConnectionTest(
+  // In browser (web dev) mode, window.fetch cannot reach cross-origin Ollama servers
+  // due to CORS. Skip the connection test gate so the preset can still be saved.
+  // Use the data attribute set by installBrowserRuntime() — more reliable than
+  // checking __TAURI_INTERNALS__ which is also mocked in browser dev mode.
+  const isBrowserMode = typeof document !== "undefined" &&
+    Boolean(document.documentElement.dataset.screenpipeWebDev);
+  const connectionTestRequired = !isBrowserMode && shouldRequireAiPresetConnectionTest(
     settingsPreset || {},
     preset,
     isDuplicating,
